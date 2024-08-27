@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infernal Horde Helper</title>
+    <style>
+        .suggestions {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            width: 100%;
+        }
+        .suggestions div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .suggestions div:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Infernal Horde Helper</h1>
+    <form method="POST">
+        <div style="position: relative;">
+            <label for="choice1">Choice 1:</label>
+            <input type="text" id="choice1" name="choice1" autocomplete="off" oninput="getSuggestions(this, 'choice1-suggestions')" required>
+            <div id="choice1-suggestions" class="suggestions"></div>
+        </div>
+        <br>
+
+        <div style="position: relative;">
+            <label for="choice2">Choice 2:</label>
+            <input type="text" id="choice2" name="choice2" autocomplete="off" oninput="getSuggestions(this, 'choice2-suggestions')" required>
+            <div id="choice2-suggestions" class="suggestions"></div>
+        </div>
+        <br>
+
+        <div style="position: relative;">
+            <label for="choice3">Choice 3:</label>
+            <input type="text" id="choice3" name="choice3" autocomplete="off" oninput="getSuggestions(this, 'choice3-suggestions')" required>
+            <div id="choice3-suggestions" class="suggestions"></div>
+        </div>
+        <br>
+
+        <button type="submit">Find Best Choice</button>
+    </form>
+
+    {% if best_choice %}
+        <h2>The best choice is: {{ best_choice }}</h2>
+    {% elif choices %}
+        <p>No valid choices found. Please enter valid options.</p>
+    {% endif %}
+
+    <script>
+        function getSuggestions(inputElement, suggestionBoxId) {
+            const query = inputElement.value;
+            const suggestionBox = document.getElementById(suggestionBoxId);
+
+            if (query.length > 0) {
+                fetch(`/suggestions?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionBox.innerHTML = "";  // Clear previous suggestions
+                        data.forEach(item => {
+                            const suggestionDiv = document.createElement("div");
+                            suggestionDiv.textContent = item;
+                            suggestionDiv.onclick = () => {
+                                inputElement.value = item;
+                                suggestionBox.innerHTML = "";  // Clear suggestions after selection
+                            };
+                            suggestionBox.appendChild(suggestionDiv);
+                        });
+                    });
+            } else {
+                suggestionBox.innerHTML = "";  // Clear suggestions when input is cleared
+            }
+        }
+    </script>
+</body>
+</html>
