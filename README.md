@@ -1,0 +1,1 @@
+This is just a practice software that is currently within in my interests. I am playing Diablo 4 and enjoying it. But there is a mode in this game where RNG can work against you. This is meant to help everyone choose the correct choices during the infernal hordes. The program will choose the correct one and will cascade to give the best possible quantity in Aether. Hope it helps!
